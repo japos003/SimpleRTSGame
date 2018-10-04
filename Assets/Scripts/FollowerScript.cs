@@ -5,6 +5,7 @@ using UnityEngine;
 public class FollowerScript : MonoBehaviour {
 
     public float _followerMoveSpeed = 5;
+    public float _playerCallRadius = 1.0f;
 
     private Vector3 _playerLocation;
     private bool _calledByPlayer;
@@ -22,13 +23,19 @@ public class FollowerScript : MonoBehaviour {
 	}
 
     private void MoveTowardsPlayer(){
-        transform.position =
-            Vector3.MoveTowards(transform.position,
-                                _playerLocation, _followerMoveSpeed * Time.deltaTime);
+        var distanceFromPlayer = Vector3.Distance(this.transform.position, _playerLocation);
 
-        if(Vector3.Distance(transform.position, _playerLocation) < 0.5f){
-            _calledByPlayer = false;
+        if(distanceFromPlayer < _playerCallRadius){
+            transform.position =
+                    Vector3.MoveTowards(transform.position,
+                        _playerLocation, _followerMoveSpeed * Time.deltaTime);
+
+            if (Vector3.Distance(transform.position, _playerLocation) < 0.5f)
+            {
+                _calledByPlayer = false;
+            }
         }
+
     }
 
 
