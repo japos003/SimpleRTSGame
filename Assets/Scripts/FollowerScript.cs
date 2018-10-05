@@ -6,6 +6,7 @@ public class FollowerScript : MonoBehaviour {
 
     public float _followerMoveSpeed = 5;
     public float _playerCallRadius = 1.0f;
+    public bool _isClicked = false;
 
     private Vector3 _playerLocation;
     private bool _calledByPlayer;

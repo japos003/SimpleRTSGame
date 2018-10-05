@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerScript : MonoBehaviour {
@@ -18,6 +19,7 @@ public class PlayerScript : MonoBehaviour {
         MoveCharacter();
         CallFollowers();
         MoveCameraTowardsPlayer();
+        CallFollowerByMouseClick();
 	}
 
     private void MoveCameraTowardsPlayer(){
@@ -46,5 +48,66 @@ public class PlayerScript : MonoBehaviour {
             var worldObject = transform.parent;
             worldObject.BroadcastMessage("GoToPlayerLocation", transform.position, SendMessageOptions.DontRequireReceiver);
         }
+    }
+
+    private void CallFollowerByMouseClick(){
+        if(Input.GetMouseButton(0)){
+            SelectFollower();
+        }
+    }
+
+    private FollowerScript GetFollowerFromMouseClick(){
+        var mousePosition = Input.mousePosition;
+        var mainCamera = _cameraObject.GetComponent<Camera>();
+        var worldPosition = mainCamera.ScreenPointToRay(mousePosition);
+
+        RaycastHit objectHit;
+        if (Physics.Raycast(worldPosition, out objectHit))
+        {
+            var follower = objectHit.collider.gameObject.GetComponent<FollowerScript>();
+            if(follower != null){
+                Debug.Log("Name: " + follower.name);
+            } else{
+                Debug.Log("Is empty");
+            }
+
+            return follower;
+        }
+
+        return null;
+    }
+
+    private void SelectFollower(){
+        var follower = GetFollowerFromMouseClick();
+        if(follower == null){
+            return;
+        }
+
+        var material = follower.gameObject.GetComponent<Renderer>().material;
+
+        FollowerScript[] followers;
+        if(ContainsClickedFollower(out followers)){
+            var clickedFollower = followers
+                                    .Where(fol => fol._isClicked).FirstOrDefault();
+
+            var clickedFollowerMaterial = clickedFollower
+                .gameObject.GetComponent<Renderer>().material;
+
+            Debug.Log("Must turn to white");
+            Debug.Log("Previously clicked Follower: " + clickedFollower.name);
+            clickedFollowerMaterial.color = Color.white;
+            clickedFollower._isClicked = false;
+        }
+
+        material.color = Color.yellow;
+        follower._isClicked = true;
+    }
+
+    private bool ContainsClickedFollower(out FollowerScript[] listOfFollowers){
+        var world = gameObject.transform.parent;
+        var followers = world.GetComponentsInChildren<FollowerScript>();
+        listOfFollowers = followers;
+
+        return followers.Any(follower => follower._isClicked);
     }
 }

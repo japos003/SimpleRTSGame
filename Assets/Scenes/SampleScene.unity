@@ -226,7 +226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b560d7a952124c12ab6abf57266c767, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _movementSpeed: 10
+  _movementSpeed: 3
   _cameraObject: {fileID: 534669902}
   _cameraMovementSpeed: 10
 --- !u!1 &141074378
@@ -329,6 +329,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _followerMoveSpeed: 5
   _playerCallRadius: 10
+  _isClicked: 0
 --- !u!54 &141074384
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -587,6 +588,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _followerMoveSpeed: 5
   _playerCallRadius: 10
+  _isClicked: 0
 --- !u!54 &597272355
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -840,6 +842,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _followerMoveSpeed: 5
   _playerCallRadius: 10
+  _isClicked: 0
 --- !u!54 &2101665396
 Rigidbody:
   m_ObjectHideFlags: 0
