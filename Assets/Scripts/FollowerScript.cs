@@ -11,17 +11,40 @@ public class FollowerScript : MonoBehaviour {
     private Vector3 _playerLocation;
     private bool _calledByPlayer;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    private bool _calledToLocation;
+    private Vector3 _clickedCalledLocation;
+
+    // Use this for initialization
+    void Start () {
+        
+    }
+    
+    // Update is called once per frame
+    void Update () {
         if(_calledByPlayer){
             MoveTowardsPlayer();
         }
-	}
+        else if(_calledToLocation){
+            transform.position = Vector3.MoveTowards(transform.position, _clickedCalledLocation, _followerMoveSpeed);
+            if(Vector3.Distance(transform.position, _clickedCalledLocation) < 2.0f){
+                _calledToLocation = false;
+            }
+        }
+    }
+
+    public void GoToPlayerLocation(Vector3 playerLocation)
+    {
+        _calledByPlayer = true;
+        _playerLocation = playerLocation;
+    }
+
+    public void GoToClickedLocation(Vector3 clickedLocation){
+        _clickedCalledLocation = clickedLocation;
+
+        _calledToLocation = true;
+        _isClicked = false;
+        Debug.Log(string.Format("go to {0}", clickedLocation));
+    }
 
     private void MoveTowardsPlayer(){
         var distanceFromPlayer = Vector3.Distance(this.transform.position, _playerLocation);
@@ -37,11 +60,5 @@ public class FollowerScript : MonoBehaviour {
             }
         }
 
-    }
-
-
-    public void GoToPlayerLocation(Vector3 playerLocation){
-        _calledByPlayer = true;
-        _playerLocation = playerLocation;
     }
 }

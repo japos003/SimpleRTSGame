@@ -52,7 +52,27 @@ public class PlayerScript : MonoBehaviour {
 
     private void CallFollowerByMouseClick(){
         if(Input.GetMouseButton(0)){
-            SelectFollower();
+            if(!SelectFollower()){
+                CommandClickedFollowerToClickedLocation();
+            }
+        }
+    }
+
+    private void CommandClickedFollowerToClickedLocation(){
+        var mousePosition = Input.mousePosition;
+        var mainCamera = _cameraObject.GetComponent<Camera>();
+        var worldPosition = mainCamera.ScreenPointToRay(mousePosition);
+
+        RaycastHit objectHit;
+        if (Physics.Raycast(worldPosition, out objectHit))
+        {
+            var world = transform.parent;
+            var listOfFollowers = world.GetComponentsInChildren<FollowerScript>();
+            var clickedFollower = listOfFollowers.Where(fol => fol._isClicked).FirstOrDefault();
+
+            if(clickedFollower != null){
+                clickedFollower.GoToClickedLocation(objectHit.point);
+            }
         }
     }
 
@@ -77,10 +97,10 @@ public class PlayerScript : MonoBehaviour {
         return null;
     }
 
-    private void SelectFollower(){
+    private bool SelectFollower(){
         var follower = GetFollowerFromMouseClick();
         if(follower == null){
-            return;
+            return false;
         }
 
         var material = follower.gameObject.GetComponent<Renderer>().material;
@@ -101,6 +121,8 @@ public class PlayerScript : MonoBehaviour {
 
         material.color = Color.yellow;
         follower._isClicked = true;
+
+        return true;
     }
 
     private bool ContainsClickedFollower(out FollowerScript[] listOfFollowers){
